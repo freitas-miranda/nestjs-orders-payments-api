@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
-import { OrdersController } from './orders.controller';
-import { OrdersService } from './orders.service';
+import { PaymentsController } from './payments.controller';
+import { PaymentsService } from './payments.service';
 import { PrismaModule } from './prisma/prisma.module';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 
@@ -9,18 +9,18 @@ import { ClientsModule, Transport } from '@nestjs/microservices';
     PrismaModule,
     ClientsModule.register([
       {
-        name: 'ORDERS_SERVICE',
+        name: 'PAYMENTS_SERVICE',
         transport: Transport.KAFKA,
         options: {
           client: {
-            clientId: 'orders',
+            clientId: 'payments',
             brokers: ['kafka:29092'],
           },
         },
       },
     ]),
   ],
-  controllers: [OrdersController],
-  providers: [OrdersService],
+  controllers: [PaymentsController],
+  providers: [PaymentsService],
 })
-export class OrdersModule {}
+export class PaymentsModule {}

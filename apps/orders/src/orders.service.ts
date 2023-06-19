@@ -1,14 +1,27 @@
 import { OrderStatus } from '.prisma/client/orders';
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { PrismaService } from './prisma/prisma/prisma.service';
 import { OrderDto } from './order.dto';
+import { ClientKafka } from '@nestjs/microservices';
+import { lastValueFrom } from 'rxjs';
 
 @Injectable()
 export class OrdersService {
-  constructor(private prismaService: PrismaService) {}
+  constructor(
+    private prismaService: PrismaService,
 
-  all() {
-    return this.prismaService.order.findMany();
+    @Inject('ORDERS_SERVICE')
+    private kafkaClient: ClientKafka,
+  ) {}
+
+  all(id: number) {
+    return this.prismaService.order.findMany({
+      where: {
+        id: {
+          gte: id,
+        },
+      },
+    });
   }
 
   async create(data: OrderDto) {
@@ -18,12 +31,11 @@ export class OrdersService {
         status: OrderStatus.PENDING,
       },
     });
-    // await lastValueFrom(this.kafkaClient.emit('orders', order));
+    await lastValueFrom(this.kafkaClient.emit('orders', order));
     return order;
   }
 
   complete(id: number, status: OrderStatus) {
-    console.log(id, status);
     return this.prismaService.order.update({
       where: { id },
       data: { status },
