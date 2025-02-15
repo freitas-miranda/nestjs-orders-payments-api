@@ -1,6 +1,5 @@
 # Gestão de pedidos e pagamentos com Kafka
 
-## Contexto
 - Projeto desenvolvido para estudo dos Sistemas Distribuídos, utilizando o Apache Kafka como mensageria.
 - Neste exemplo utilizamos o Kafka para comunicação entre os microsserviços de Pedidos e Pagamentos. Também é utilizado o Prisma com MySQL para persistência dos dados. A infraestrutura é gerenciada pelo Docker Compose.
 
